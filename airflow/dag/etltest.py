@@ -11,10 +11,10 @@ args = {
       'owner' : 'SKKU-Sanahk',
       'start_date' : days_ago(2),
       'retries' : 2,
-      'retry_delay' : timedelta(minutes=3),
+      'retry_delay' : timedelta(minutes=2),
 }
 
-dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=2)
+dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=1)
 
 t1 = KubernetesPodOperator(
     namespace='spark',
