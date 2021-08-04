@@ -8,7 +8,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
 
 # define arguments and dag
 args = {
-      'owner' : 'SKKU-Sanahk',
+      'owner' : 'SKKU-Sanhak',
       'start_date' : days_ago(2),
       'retries' : 2,
       'retry_delay' : timedelta(minutes=2),
@@ -17,22 +17,22 @@ args = {
 dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=1)
 
 t1 = KubernetesPodOperator(
-    namespace='spark',
-    image="docker.io/cmcm0012/spark:v1",
+    namespace="spark",
+    image="cmcm0012/spark:v1",
     cmds=["./submit.sh"],
     arguments=["chart-etl.py"],
     labels={"foo": "bar"},
     image_pull_policy="Always",
     name="chart-cdc",
     task_id="Chart-etl",
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
 
 t2 = KubernetesPodOperator(
-    namespace='spark',
-    image="docker.io/cmcm0012/spark:v1",
+    namespace="spark",
+    image="cmcm0012/spark:v1",
     cmds=["./submit.sh"],
     arguments=["patient-etl.py"],
     labels={"foo": "bar"},
