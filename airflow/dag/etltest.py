@@ -11,14 +11,14 @@ args = {
       'owner' : 'SKKU-Sanahk',
       'start_date' : days_ago(2),
       'retries' : 2,
-      'retry_delay' : timedelta(minutes=3),
+      'retry_delay' : timedelta(minutes=2),
 }
 
-dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=2)
+dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=1)
 
 t1 = KubernetesPodOperator(
     namespace='spark',
-    image="cmcm0012/tespark:v1",
+    image="docker.io/cmcm0012/spark:v1",
     cmds=["./submit.sh"],
     arguments=["chart-etl.py"],
     labels={"foo": "bar"},
@@ -32,7 +32,7 @@ t1 = KubernetesPodOperator(
 
 t2 = KubernetesPodOperator(
     namespace='spark',
-    image="cmcm0012/tespark:v1",
+    image="docker.io/cmcm0012/spark:v1",
     cmds=["./submit.sh"],
     arguments=["patient-etl.py"],
     labels={"foo": "bar"},
