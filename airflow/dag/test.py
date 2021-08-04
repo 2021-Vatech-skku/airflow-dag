@@ -15,48 +15,66 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-"""
-This is an example dag for using the KubernetesPodOperator.
-"""
 
-from kubernetes.client import models as k8s
+"""Example DAG demonstrating the usage of the BashOperator."""
+
+from datetime import timedelta
 
 from airflow import DAG
-from airflow.kubernetes.secret import Secret
 from airflow.operators.bash import BashOperator
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 
+args = {
+    'owner': 'airflow',
+}
+
 with DAG(
-    dag_id='example_kubernetes_operator',
-    schedule_interval=None,
+    dag_id='example_bash_operator',
+    default_args=args,
+    schedule_interval='0 0 * * *',
     start_date=days_ago(2),
-    tags=['example'],
+    dagrun_timeout=timedelta(minutes=60),
+    tags=['example', 'example2'],
+    params={"example_key": "example_value"},
 ) as dag:
-    k = KubernetesPodOperator(
-        namespace='default',
-        image="ubuntu:16.04",
-        cmds=["bash", "-cx"],
-        arguments=["echo", "10"],
-        labels={"foo": "bar"},
-        name="airflow-test-pod",
-        task_id="task",
-        is_delete_operator_pod=True,
-        hostnetwork=False,
-        priority_class_name="medium",
+
+    run_this_last = DummyOperator(
+        task_id='run_this_last',
     )
 
-    # [START howto_operator_k8s_write_xcom]
-    write_xcom = KubernetesPodOperator(
-        namespace='default',
-        image='alpine',
-        cmds=["sh", "-c", "mkdir -p /airflow/xcom/;echo '[1,2,3,4]' > /airflow/xcom/return.json"],
-        name="write-xcom",
-        do_xcom_push=True,
-        is_delete_operator_pod=True,
-        in_cluster=True,
-        task_id="write-xcom",
-        get_logs=True,
+    # [START howto_operator_bash]
+    run_this = BashOperator(
+        task_id='run_after_loop',
+        bash_command='echo 1',
     )
+    # [END howto_operator_bash]
 
-    k >> write_xcom
+    run_this >> run_this_last
+
+    for i in range(3):
+        task = BashOperator(
+            task_id='runme_' + str(i),
+            bash_command='echo "{{ task_instance_key_str }}" && sleep 1',
+        )
+        task >> run_this
+
+    # [START howto_operator_bash_template]
+    also_run_this = BashOperator(
+        task_id='also_run_this',
+        bash_command='echo "run_id={{ run_id }} | dag_run={{ dag_run }}"',
+    )
+    # [END howto_operator_bash_template]
+    also_run_this >> run_this_last
+
+# [START howto_operator_bash_skip]
+this_will_skip = BashOperator(
+    task_id='this_will_skip',
+    bash_command='echo "hello world"; exit 99;',
+    dag=dag,
+)
+# [END howto_operator_bash_skip]
+this_will_skip >> run_this_last
+
+if __name__ == "__main__":
+    dag.cli()
