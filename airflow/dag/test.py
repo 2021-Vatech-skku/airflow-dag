@@ -83,6 +83,7 @@ with DAG(
         env_vars={'PYTHONUNBUFFERED' : 'True'},
         labels={'sidecar.istio.io/inject' : 'false'},
         affinity=node_affinity,
+        is_delete_operator_pod=False,
         get_logs=True,
     )
 
