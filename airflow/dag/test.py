@@ -16,17 +16,30 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Example DAG demonstrating the usage of the BashOperator."""
-
 from datetime import timedelta
+from os import name
 
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 
 args = {
-    'owner': 'airflow',
+    'owner': 'Heegwan Son',
+}
+
+node_affinity = {
+    'nodeAffinity': {
+        'preferredDuringSchedulingIgnoredDuringExecution': {
+            'preference': [{
+                'matchExpressions': [{
+                    'key': 'node-roles.kubernetes.io/control-plane',
+                    'operator': 'DoesNotExist'
+                }]
+            }],
+            'weight': 50
+        }
+    }
 }
 
 with DAG(
@@ -35,46 +48,32 @@ with DAG(
     schedule_interval='0 0 * * *',
     start_date=days_ago(2),
     dagrun_timeout=timedelta(minutes=60),
-    tags=['example', 'example2'],
-    params={"example_key": "example_value"},
+    tags=['example', 'faker'],
 ) as dag:
 
-    run_this_last = DummyOperator(
-        task_id='run_this_last',
+    StartOperator = DummyOperator(
+        task_id='start',
     )
 
-    # [START howto_operator_bash]
-    run_this = BashOperator(
-        task_id='run_after_loop',
-        bash_command='echo 1',
+    kubernetes_min_pod = KubernetesPodOperator(
+        task_id='pod-ex-minimum',
+        name='pod-ex-minimum',
+        cmds=['echo'],
+        namespace='airflow',
+        image='gcr.io/gcp-runtimes/ubuntu_18_0_4'
     )
-    # [END howto_operator_bash]
 
-    run_this >> run_this_last
-
-    for i in range(3):
-        task = BashOperator(
-            task_id='runme_' + str(i),
-            bash_command='echo "{{ task_instance_key_str }}" && sleep 1',
-        )
-        task >> run_this
-
-    # [START howto_operator_bash_template]
-    also_run_this = BashOperator(
-        task_id='also_run_this',
-        bash_command='echo "run_id={{ run_id }} | dag_run={{ dag_run }}"',
+    FakerOperator = KubernetesPodOperator(
+        task_id='elasticfaker-test',
+        name="elastic_faker",
+        namespace="elasticsearch",
+        image="gmlrhks95/elastic-faker:latest",
+        ports=8000,
+        env_vars={'PYTHONUNBUFFERED' : 'True'},
+        affinity=node_affinity,
     )
-    # [END howto_operator_bash_template]
-    also_run_this >> run_this_last
 
-# [START howto_operator_bash_skip]
-this_will_skip = BashOperator(
-    task_id='this_will_skip',
-    bash_command='echo "hello world"; exit 99;',
-    dag=dag,
-)
-# [END howto_operator_bash_skip]
-this_will_skip >> run_this_last
+    StartOperator >> kubernetes_min_pod >> FakerOperator
 
 if __name__ == "__main__":
     dag.cli()
