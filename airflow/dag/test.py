@@ -19,6 +19,7 @@
 from datetime import timedelta
 from os import name
 
+from kubernetes.client import models as k8s
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
@@ -41,6 +42,8 @@ node_affinity = {
         }
     }
 }
+
+port = k8s.V1ContainerPort(name='http-faker', container_port=8000)
 
 with DAG(
     dag_id='Kubernetes_faker_daily',
@@ -68,7 +71,7 @@ with DAG(
         name="elastic_faker",
         namespace="elasticsearch",
         image="gmlrhks95/elastic-faker:latest",
-        ports={'containerPort' : 8000},
+        ports=port,
         env_vars={'PYTHONUNBUFFERED' : 'True'},
         affinity=node_affinity,
     )
