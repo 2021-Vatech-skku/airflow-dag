@@ -66,9 +66,12 @@ with DAG(
     kubernetes_min_pod = KubernetesPodOperator(
         task_id='pod-ex-minimum',
         name='pod-ex-minimum',
-        cmds=['echo Hello!; sleep 30; exit 0'],
+        cmds=['echo'],
+        args=["Hello!"],
+        is_delete_operator_pod=False,
         namespace='airflow',
-        image='gcr.io/gcp-runtimes/ubuntu_18_0_4'
+        image='gcr.io/gcp-runtimes/ubuntu_18_0_4',
+        get_logs=True,
     )
 
     FakerOperator = KubernetesPodOperator(
@@ -80,6 +83,7 @@ with DAG(
         env_vars={'PYTHONUNBUFFERED' : 'True'},
         labels={'sidecar.istio.io/inject' : 'false'},
         affinity=node_affinity,
+        get_logs=True,
     )
 
     StartOperator >> kubernetes_min_pod >> FakerOperator
