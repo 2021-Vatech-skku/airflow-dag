@@ -66,7 +66,7 @@ with DAG(
     kubernetes_min_pod = KubernetesPodOperator(
         task_id='pod-ex-minimum',
         name='pod-ex-minimum',
-        cmds=['>&2 echo asd; exit 0'],
+        cmds=['echo'],
         namespace='airflow',
         image='gcr.io/gcp-runtimes/ubuntu_18_0_4'
     )
