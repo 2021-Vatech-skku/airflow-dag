@@ -67,7 +67,7 @@ with DAG(
         task_id='pod-ex-minimum',
         name='pod-ex-minimum',
         cmds=['echo'],
-        args=["Hello!"],
+        arguments=["Hello!"],
         is_delete_operator_pod=False,
         namespace='airflow',
         image='gcr.io/gcp-runtimes/ubuntu_18_0_4',
