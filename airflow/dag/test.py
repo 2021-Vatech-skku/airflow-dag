@@ -76,7 +76,7 @@ with DAG(
         name="elastic_faker",
         namespace="elasticsearch",
         image="gmlrhks95/elastic-faker:latest",
-        ports=port,
+        ports=[port],
         env_vars={'PYTHONUNBUFFERED' : 'True'},
         affinity=node_affinity,
     )
