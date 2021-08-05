@@ -67,6 +67,7 @@ with DAG(
         task_id='pod-ex-minimum',
         name='pod-ex-minimum',
         cmds=['echo'],
+        arguments=['Hello World!'],
         namespace='airflow',
         image='gcr.io/gcp-runtimes/ubuntu_18_0_4'
     )
@@ -75,7 +76,7 @@ with DAG(
         task_id='elasticfaker-test',
         name="elastic_faker",
         namespace="elasticsearch",
-        image="gmlrhks95/elastic-faker:latest",
+        image="gmlrhks95/elastic-faker",
         ports=[port],
         env_vars={'PYTHONUNBUFFERED' : 'True'},
         affinity=node_affinity,
