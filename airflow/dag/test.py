@@ -24,24 +24,29 @@ from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
+from sqlalchemy.sql.operators import op
 
 args = {
     'owner': 'Heegwan Son',
 }
 
-node_affinity = {
-    'nodeAffinity': {
-        'preferredDuringSchedulingIgnoredDuringExecution': {
-            'preference': [{
-                'matchExpressions': [{
-                    'key': 'node-roles.kubernetes.io/control-plane',
-                    'operator': 'DoesNotExist'
-                }]
-            }],
-            'weight': 50
-        }
-    }
-}
+node_affinity = k8s.V1Affinity(
+    node_affinity = k8s.V1NodeAffinity(
+        preferred_during_scheduling_ignored_during_execution=[
+            k8s.V1PreferredSchedulingTerm(
+                weight=50,
+                preference=k8s.V1NodeSelectorTerm(
+                    match_expressions=[
+                        k8s.V1NodeSelectorRequirement(
+                            key="node-roles.kubernetes.io/control-plane",
+                            operator="DoesNotExist"
+                        )
+                    ]
+                ),
+            )
+        ]
+    ),
+)
 
 port = k8s.V1ContainerPort(name='http-faker', container_port=8000)
 
