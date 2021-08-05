@@ -77,7 +77,7 @@ with DAG(
     FakerOperator = KubernetesPodOperator(
         task_id='elasticfaker-test',
         name="elastic_faker",
-        namespace="airflow",
+        namespace="elasticsearch",
         image="gmlrhks95/elastic-faker",
         ports=[port],
         env_vars={'PYTHONUNBUFFERED' : 'True'},
