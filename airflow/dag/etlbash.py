@@ -18,7 +18,7 @@ t1 = BashOperator(
 )
 
 t2 = BashOperator(
-    task_id="chart_etl", bash_command="./submit.sh chart-etl.py", dag=dag
+    task_id="patient_etl", bash_command="./submit.sh patient-etl.py", dag=dag
 )
 
 t1 >> t2
