@@ -43,7 +43,7 @@ node_affinity = {
 }
 
 with DAG(
-    dag_id='example_bash_operator',
+    dag_id='Kubernetes_faker_daily',
     default_args=args,
     schedule_interval='0 0 * * *',
     start_date=days_ago(2),
