@@ -11,13 +11,13 @@ args = {
       'retry_delay' : timedelta(minutes=2),
 }
 
-dag = DAG('ETL_workflow_usingBash', schedule_interval = '@daily', default_args = args, max_active_runs=1)
+dag = DAG('ETL_workflow_usingBash', schedule_interval = '@daily', default_args = args, max_active_runs=1, tags=['test', 'Clever', 'ETL'],)
 
-t1 = BashPodOperator(
+t1 = BashOperator(
     task_id="chart_etl", bash_command="./submit.sh chart-etl.py", dag=dag
 )
 
-t2 = BashPodOperator(
+t2 = BashOperator(
     task_id="chart_etl", bash_command="./submit.sh chart-etl.py", dag=dag
 )
 
