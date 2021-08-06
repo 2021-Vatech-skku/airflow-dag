@@ -38,7 +38,7 @@ t1 = KubernetesPodOperator(
     image_pull_policy="Always",
     name="chart-cdc",
     task_id="Chart-etl",
-    is_delete_operator_pod=True,
+    is_delete_operator_pod=False,
     get_logs=True,
     dag=dag
 )
