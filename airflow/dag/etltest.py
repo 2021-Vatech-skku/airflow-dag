@@ -16,6 +16,19 @@ args = {
 
 dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = args, max_active_runs=1)
 
+t0 = KubernetesPodOperator(
+    namespace="spark",
+    image="cmcm0012/spark:v2",
+    cmds=["whoami"],
+    labels={"foo": "bar"},
+    image_pull_policy="Always",
+    name="dummy",
+    task_id="start",
+    is_delete_operator_pod=True,
+    get_logs=True,
+    dag=dag
+)
+
 t1 = KubernetesPodOperator(
     namespace="spark",
     image="cmcm0012/spark:v2",
@@ -44,4 +57,4 @@ t2 = KubernetesPodOperator(
     dag=dag
 )
 
-t1 >> t2
+t0 >> t1 >> t2
