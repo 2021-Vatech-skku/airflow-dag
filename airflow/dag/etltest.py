@@ -18,7 +18,7 @@ dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = arg
 
 t1 = KubernetesPodOperator(
     namespace="spark",
-    image="cmcm0012/spark:v1",
+    image="cmcm0012/spark:v2",
     cmds=["./submit.sh"],
     arguments=["chart-etl.py"],
     labels={"foo": "bar"},
@@ -32,7 +32,7 @@ t1 = KubernetesPodOperator(
 
 t2 = KubernetesPodOperator(
     namespace="spark",
-    image="cmcm0012/spark:v1",
+    image="cmcm0012/spark:v2",
     cmds=["./submit.sh"],
     arguments=["patient-etl.py"],
     labels={"foo": "bar"},
