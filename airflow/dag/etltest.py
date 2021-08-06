@@ -38,6 +38,7 @@ t1 = KubernetesPodOperator(
     image_pull_policy="Always",
     name="chart-cdc",
     task_id="Chart-etl",
+    env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', 'PATH' : '${PATH}:${JAVA_HOME}/bin:${SPARK_HOME}/bin:${SPARK_HOME}/sbin'},
     is_delete_operator_pod=False,
     get_logs=True,
     dag=dag
