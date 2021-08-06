@@ -24,7 +24,7 @@ t0 = KubernetesPodOperator(
     image_pull_policy="Always",
     name="dummy",
     task_id="start",
-    is_delete_operator_pod=True,
+    is_delete_operator_pod=False,
     get_logs=True,
     dag=dag
 )
