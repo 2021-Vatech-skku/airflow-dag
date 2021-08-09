@@ -19,7 +19,7 @@ dag = DAG('ETL_workflow_daily', schedule_interval = '@daily', default_args = arg
 t0 = KubernetesPodOperator(
     namespace="spark",
     image="cmcm0012/spark:v2",
-    cmds=["whoami"],
+    cmds=["printenv"],
     labels={"foo": "bar"},
     image_pull_policy="Always",
     name="dummy",
