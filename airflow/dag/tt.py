@@ -95,7 +95,6 @@ t6 = KubernetesPodOperator(
     is_delete_operator_pod=False,
     get_logs=True,
     dag=dag
-    xcom_push=True
 )
 t7 = KubernetesPodOperator(
     task_id="initial_insert_patient",
@@ -122,7 +121,6 @@ t8 = KubernetesPodOperator(
     is_delete_operator_pod=False,
     get_logs=True,
     dag=dag
-    xcom_push=True
 )
 def branch_func(**kwargs):
     ti = kwargs['ti']
