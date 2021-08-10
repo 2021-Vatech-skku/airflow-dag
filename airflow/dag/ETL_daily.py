@@ -7,12 +7,12 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 
 args = {
       'owner' : 'Sanhak',
-      'start_date' : datetime(2021, 8, 9),    #'start_date': days_ago(1),
+      'start_date' : datetime(2021, 8, 10, 15, 15),    #'start_date': days_ago(1),
       'retries' : 2,
       'retry_delay' : timedelta(minutes=3),
 }
 
-dag = DAG('ETL_daily', schedule_interval = timedelta(days=1), default_args = args, max_active_runs=1)
+dag = DAG('ETL_daily', schedule_interval = timedeta(days=1), default_args = args, max_active_runs=1)
 
 t1 = KubernetesPodOperator(
     task_id="insert_chart",
