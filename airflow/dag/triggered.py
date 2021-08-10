@@ -15,7 +15,7 @@ args = {
       'retry_delay' : timedelta(minutes=3),
 }
 
-dag = DAG('Triggered_Test', schedule_interval = '*/2 * * * *', default_args = args, max_active_runs=1)
+dag = DAG('Triggered_Test', schedule_interval = '*/10 * * * *', default_args = args, max_active_runs=1)
 
 t0 = DummyOperator(task_id="Start", dag=dag)
 
