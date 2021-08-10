@@ -8,7 +8,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 #from kubernetes.client import models as k8s
 
 def branch_func(ti):
-    xcom_value = ti.xcom_pull(task_ids='initial_job_Cleared', key="daily")
+    xcom_value = ti.xcom_pull(key="daily")
     if xcom_value:
         if xcom_value >= 5:
             return 'daily'
@@ -18,7 +18,8 @@ def branch_func(ti):
         return 'overwrite'
 
 def print_xcom(ti):
-    xcom_value = ti.xcom_pull(task_ids='initial_job_Cleared', key="daily")
+    xcom_value = ti.xcom_pull(key="daily")
+    ti.xcom_push(key="check", value=xcom_value)
     return xcom_value
 
 def xcom_daily(ti):
