@@ -9,7 +9,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
  
 
 def branch_func(ti):
-    xcom_value = ti.xcom_pull(key="daily", include_prior_dates=False)
+    xcom_value = ti.xcom_pull(key="daily", include_prior_dates=True)
     if xcom_value:
         if xcom_value >= 5:
             return 'daily'
@@ -19,7 +19,7 @@ def branch_func(ti):
         return 'overwrite'
 
 def print_xcom(ti):
-    xcom_value = ti.xcom_pull(key="daily", include_prior_dates=False)
+    xcom_value = ti.xcom_pull(key="daily", include_prior_dates=True)
     ti.xcom_push(key="check", value=xcom_value)
     return xcom_value
 
