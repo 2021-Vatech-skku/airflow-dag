@@ -50,7 +50,7 @@ t1 = KubernetesPodOperator(
     arguments=["clever-fetch.py"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -63,7 +63,7 @@ t2 = KubernetesPodOperator(
     arguments=["clever-fetch.py -t update"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -76,7 +76,7 @@ t3 = KubernetesPodOperator(
     arguments=["clever-fetch.py -c jee.clever.dev0-patient.filtered.test"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -89,7 +89,7 @@ t4 = KubernetesPodOperator(
     arguments=["clever-fetch.py -c jee.clever.dev0-patient.filtered.test -t update"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -102,7 +102,7 @@ t5 = KubernetesPodOperator(
     arguments=["clever-fetch.py -y 0"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -115,7 +115,7 @@ t6 = KubernetesPodOperator(
     arguments=["clever-fetch.py -t update -y 0"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -128,7 +128,7 @@ t7 = KubernetesPodOperator(
     arguments=["clever-fetch.py -c jee.clever.dev0-patient.filtered.test -y 0"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
@@ -141,7 +141,7 @@ t8 = KubernetesPodOperator(
     arguments=["clever-fetch.py -c jee.clever.dev0-patient.filtered.test -t update -y 0"],
     image_pull_policy="Always",
     env_vars={'SPARK_HOME' : '/opt/spark', 'JAVA_HOME' : '/usr/lib/jvm/java-11-openjdk-amd64', "SPARK_LOCAL_HOSTNAME" : "localhost"},
-    is_delete_operator_pod=False,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
