@@ -141,7 +141,7 @@ check = BranchPythonOperator(
 Initial = BashOperator(
     task_id='initial_job_Cleared',
     bash_command="echo 5",
-    xcom_push=True,
+    # xcom_push=True,
     dag=dag
 )
 overwrite = DummyOperator(task_id="overwrite", dag=dag)
