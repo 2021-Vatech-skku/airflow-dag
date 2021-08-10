@@ -12,7 +12,7 @@ args = {
       'retry_delay' : timedelta(minutes=3),
 }
 
-dag = DAG('ETL_daily', schedule_interval = timedeta(days=1), default_args = args, max_active_runs=1)
+dag = DAG('ETL_daily', schedule_interval = timedelta(days=1), default_args = args, max_active_runs=1)
 
 t1 = KubernetesPodOperator(
     task_id="insert_chart",
