@@ -6,10 +6,10 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 #from kubernetes.client import models as k8s
+ 
 
-start_date = "{{ dag_run.start_date }}"
 def branch_func(ti):
-    xcom_value = ti.xcom_pull(key="daily", execution_date=start_date)
+    xcom_value = ti.xcom_pull(key="daily", execution_date=timedelta.datetime(2021, 8, 5))
     if xcom_value:
         if xcom_value >= 5:
             return 'daily'
@@ -19,7 +19,7 @@ def branch_func(ti):
         return 'overwrite'
 
 def print_xcom(ti):
-    xcom_value = ti.xcom_pull(key="daily", execution_date=start_date)
+    xcom_value = ti.xcom_pull(key="daily", execution_date=timedelta.datetime(2021, 8, 5))
     ti.xcom_push(key="check", value=xcom_value)
     return xcom_value
 
@@ -28,7 +28,7 @@ def xcom_daily(ti):
 
 args = {
       'owner' : 'Sanhak',
-      'start_date' : days_ago(4),    #'start_date': datetime(2021, 8, 8),
+      'start_date' : timedelta.datetime(2021, 8, 5),    #'start_date': datetime(2021, 8, 8),
       'retries' : 2,
       'retry_delay' : timedelta(minutes=3),
       'provide_context': True
