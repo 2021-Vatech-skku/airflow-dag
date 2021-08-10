@@ -26,7 +26,7 @@ def xcom_daily(ti):
 
 args = {
       'owner' : 'Sanhak',
-      'start_date' : days_ago(1),    #'start_date': datetime(2021, 8, 8),
+      'start_date' : days_ago(4),    #'start_date': datetime(2021, 8, 8),
       'retries' : 2,
       'retry_delay' : timedelta(minutes=3),
       'provide_context': True
