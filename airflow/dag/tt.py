@@ -1,7 +1,6 @@
 from datetime import timedelta, datetime
 from airflow.utils.dates import days_ago
 from airflow import DAG
-from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
@@ -18,11 +17,6 @@ def branch_func(ti):
     else:
         return 'overwrite'
 
-def print_xcom(ti):
-    xcom_value = ti.xcom_pull(key="daily", include_prior_dates=True)
-    ti.xcom_push(key="check", value=xcom_value)
-    return xcom_value
-
 def xcom_daily(ti):
     ti.xcom_push(key='daily', value=5)
 
@@ -36,11 +30,7 @@ args = {
 
 dag = DAG('BranchTest', schedule_interval = '0 0 * * *', default_args = args, max_active_runs=1)
 
-t0 = PythonOperator(
-  task_id="Start",
-  python_callable=print_xcom,
-  dag=dag
-)
+t0 = DummyOperator(task_id="Start", dag=dag)
 
 t1 = KubernetesPodOperator(
     task_id="insert_chart",
