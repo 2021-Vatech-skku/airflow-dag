@@ -20,6 +20,7 @@ args = {
       'start_date' : days_ago(1),    #'start_date': datetime(2021, 8, 8),
       'retries' : 2,
       'retry_delay' : timedelta(minutes=3),
+      'provide_context': True
 }
 
 dag = DAG('BranchTest', schedule_interval = '0 0 * * *', default_args = args, max_active_runs=1)
@@ -131,7 +132,6 @@ t8 = KubernetesPodOperator(
     dag=dag
 )
 
-
 check = BranchPythonOperator(
     task_id='branch_task',
     provide_context=True,
@@ -141,7 +141,7 @@ check = BranchPythonOperator(
 Initial = BashOperator(
     task_id='initial_job_Cleared',
     bash_command="echo 5",
-    # xcom_push=True,
+    xcom_push=True,
     dag=dag
 )
 overwrite = DummyOperator(task_id="overwrite", dag=dag)
