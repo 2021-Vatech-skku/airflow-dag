@@ -3,17 +3,19 @@ from airflow.utils.dates import days_ago
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
-from airflow.operators.python import BranchPythonOperator
+from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 #from kubernetes.client import models as k8s
 
-def branch_func(**kwargs):
-    ti = kwargs['ti']
-    xcom_value = int(ti.xcom_pull(task_ids='initial_job_Cleared'))
+def branch_func(ti):
+    xcom_value = ti.xcom_pull(task_ids='initial_job_Cleared', key="daily")
     if xcom_value >= 5:
         return 'daily'
     else:
         return 'overwrite'
+
+def xcom_daily(ti):
+    ti.xcom_push(key='daily', value=5)
 
 args = {
       'owner' : 'Sanhak',
@@ -138,9 +140,9 @@ check = BranchPythonOperator(
     python_callable=branch_func,
     dag=dag
 )
-Initial = BashOperator(
+Initial = PythonOperator(
     task_id='initial_job_Cleared',
-    bash_command="echo 5",
+    python_callable=xcom_daily,
     dag=dag
 )
 overwrite = DummyOperator(task_id="overwrite", dag=dag)
