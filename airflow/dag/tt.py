@@ -14,6 +14,10 @@ def branch_func(ti):
     else:
         return 'overwrite'
 
+def print_xcom(ti):
+    xcom_value = ti.xcom_pull(task_ids='initial_job_Cleared', key="daily")
+    print(xcom_value)
+
 def xcom_daily(ti):
     ti.xcom_push(key='daily', value=5)
 
@@ -27,7 +31,11 @@ args = {
 
 dag = DAG('BranchTest', schedule_interval = '0 0 * * *', default_args = args, max_active_runs=1)
 
-t0 = DummyOperator(task_id="Start", dag=dag)
+t0 = PythonOperator(
+  task_id="Start",
+  python_callable=print_xcom,
+  dag=dag
+)
 
 t1 = KubernetesPodOperator(
     task_id="insert_chart",
