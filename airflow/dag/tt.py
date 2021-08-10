@@ -19,7 +19,7 @@ def branch_func(ti):
 
 def print_xcom(ti):
     xcom_value = ti.xcom_pull(task_ids='initial_job_Cleared', key="daily")
-    print(xcom_value)
+    return xcom_value
 
 def xcom_daily(ti):
     ti.xcom_push(key='daily', value=5)
