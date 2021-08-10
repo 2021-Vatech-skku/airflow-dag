@@ -7,6 +7,14 @@ from airflow.operators.python import BranchPythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 #from kubernetes.client import models as k8s
 
+def branch_func(**kwargs):
+    ti = kwargs['ti']
+    xcom_value = int(ti.xcom_pull(task_ids='initial_job_Cleared'))
+    if xcom_value >= 5:
+        return 'daily'
+    else:
+        return 'overwrite'
+
 args = {
       'owner' : 'Sanhak',
       'start_date' : days_ago(1),    #'start_date': datetime(2021, 8, 8),
@@ -122,28 +130,23 @@ t8 = KubernetesPodOperator(
     get_logs=True,
     dag=dag
 )
-def branch_func(**kwargs):
-    ti = kwargs['ti']
-    xcom_value = int(ti.xcom_pull(task_ids='initial_job_Cleared'))
-    if xcom_value >= 5:
-        return 'daily'
-    else:
-        return 'overwrite'
 
-Initial = BashOperator(
-    task_id='initial_job_Cleared',
-    bash_command="echo 5",
-    xcom_push=True,
-    dag=dag)
 
 check = BranchPythonOperator(
     task_id='branch_task',
     provide_context=True,
     python_callable=branch_func,
-    dag=dag)
-
+    dag=dag
+)
+Initial = BashOperator(
+    task_id='initial_job_Cleared',
+    bash_command="echo 5",
+    xcom_push=True,
+    dag=dag
+)
 overwrite = DummyOperator(task_id="overwrite", dag=dag)
 daily = DummyOperator(task_id="daily", dag=dag)
+
 # schedule
 t0 >> check >> overwrite
 overwrite >> t5 >> t6 >> Initial
