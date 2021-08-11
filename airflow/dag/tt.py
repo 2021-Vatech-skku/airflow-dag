@@ -28,7 +28,7 @@ args = {
       'provide_context': True
 }
 
-dag = DAG('ETL_Branch', schedule_interval = '0 0 * * *', default_args = args, max_active_runs=1, tags=['Sanhak', 'ETL', 'Spark'])
+dag = DAG('ETL_Branch', schedule_interval = '@daily', default_args = args, max_active_runs=1, tags=['Sanhak', 'ETL', 'Spark'])
 
 t0 = DummyOperator(task_id="Start", dag=dag)
 
